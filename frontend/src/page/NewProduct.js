@@ -78,11 +78,18 @@ const NewProduct= ()=> {
         <select className='bg-slate-200 p-1 my-1' id='category' name= 'category' onChange={handleOnChange} value= {data.category}>
 {/* Change it to requirements of the site: Sockets and all */}
           <option value={"other"}>Select Category</option>
-          <option value={"fruits"}>Fruits</option>
-          <option value={"vegetable"}>Vegetables</option>
-          <option value={"icream"}>IceCream</option>
-          <option value={"dosa"}>Dosa</option>
-          <option value={"pizza"}>Pizza</option>
+          <option value={"Switches"}>Switches</option>
+          <option value={"Sockets"}>Sockets</option>
+          <option value={"Regulators"}>Regulators</option>
+          <option value={"Indicators"}>Indicators</option>
+          <option value={"Holders"}>Holders</option>
+          <option value={"Plates"}>Plates</option>
+          <option value={"MCB"}>MCB</option>
+          <option value={"MCBBoxes"}>MCB Boxes</option>
+          <option value={"SSCombine"}>SS Combine</option>
+          <option value={"Plugs"}>Plugs </option>
+          <option value={"Gl MOdular Box"}>Gl Modular Box</option>
+          <option value={"OthersItems"}>Others </option>
         </select>
 
         

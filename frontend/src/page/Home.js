@@ -6,13 +6,14 @@ import CardFeature from '../component/CardFeature';
 import {GrPrevious} from 'react-icons/gr'
 import {GrNext} from 'react-icons/gr'
 import AllProduct from '../component/AllProduct';
+import switchImage from '../asset/switchImage.png'
 function Home(){
   const productData= useSelector ((state)=>state.product.productList)
   // console.log(productData)
   const homeProductCartList= productData.slice(0,4)
 
   //change it as per requirements**************
-  const homeProductCartListVegetables= productData.filter(el=>el.category === "vegetable", [])
+  const homeProductCartListVegetables= productData.filter(el=>el.category === "Switches", [])
 
   const loadingArray= new Array(4).fill(null)
   const loadingArrayFeature= new Array(10).fill(null)
@@ -32,11 +33,12 @@ const slideProductRef= useRef()
 
         <div className='md:w-1/2 '>
           <div className='flex gap-3 bg-slate-300 w-36 px-2 items-center rounded-full'>
-            <p className='text-sm font-medium text-slate-900'>Bike Delivery</p>
-            <img src='https://cdn-icons-png.flaticon.com/512/2972/2972185.png' alt='cycleKiPhoto' className='h-7'/>
+            <p className='text-sm font-medium text-slate-900'>Appliances</p>
+            <img src={switchImage} alt='cycleKiPhoto' className='h-7'/>
           </div>
-          <h2 className='text-4xl md:text-7xl font-bold py-3'>The Fasttest Delivery in <span className='text-red-600 text-'>Your Home</span></h2>
-          <p className='py-3 text-base'>This course is designed for anyone with some basic web development experience who wants to learn how to build a FULLY RESPONSIVE ecommerce site using MERN. By the end of this course, you will have learned how to build a working ecommerce site from scratch, using React, Redux, Nodejs, and MongoDB.</p>
+          <h2 className='text-4xl md:text-7xl font-bold py-3'>Home Electric is now a <span className='text-red-600 text-'> Registered Brand</span></h2>
+          <p className='py-3 text-base'>
+          Home Electric and Appliances has rapidly risen in the electrical manufacturing industry. Starting just two years ago with basic electrical holders and SS combined, we've expanded our product range to include switch and sockets, modular metal boxes, fan boxes, light boxes, MCBs, distribution boxes, modular, and non-modular items. Our vision is to be one of India's leading electrical manufacturers, offering quality at an affordable price. Driven by innovation and a customer-centric approach, we pride ourselves on our commitment to excellence and rapid growth. Join us in our journey towards excellence.</p>
           <button className='font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md'>Order Now</button>
         </div>
 
@@ -70,7 +72,7 @@ const slideProductRef= useRef()
         <div className='flex w-full items-center'>
 
           <h2 className='font-bold text-2xl text-slate-800 mb-4'>
-            Fresh Vegetables
+            Switches
           </h2>
 
           <div className='ml-auto flex gap-4'>
@@ -85,7 +87,7 @@ const slideProductRef= useRef()
             homeProductCartListVegetables[0]? homeProductCartListVegetables.map(el=>{
               return(
                 <CardFeature
-                  key= {el._id+"vegetable"}
+                  key= {el._id+"Switches"}
                   id= {el._id}
                   name={el.name}
                   category={el.category}

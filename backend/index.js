@@ -64,6 +64,7 @@ app.post("/signup", async (req,res)=>{
 app.post("/login", async(req, res)=>{
     try{
         const {email}= req.body;
+        const {password}= req.body;
         //Have to add password authentication here..
         const result= await userModel.findOne({email});
         if(result){
@@ -74,8 +75,21 @@ app.post("/login", async(req, res)=>{
                 email: result.email,
                 image: result.image,
             };
+
+            console.log(result.password);
+            console.log({password});
+
+            if(result.password === password){
+                res.send({message: "Login successfull", alert: true, data: dataSend});
+            }
+            
+            else{
+                res.send({message: "Wrong Password", alert: false})
+            }
+
+            
             // console.log(dataSend)
-            res.send({message: "Login successfull", alert: true, data: dataSend});
+            
         }
         else{
             res.send({message: "Email not available", alert: false})
