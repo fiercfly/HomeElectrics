@@ -35,7 +35,7 @@ function Menu() {
             </h3>
           <p className='text-slate-500 font-medium text-2xl'>{productDisplay.category}</p>
           <p className= 'font-bold md:text-2xl'>
-            <span className='text-red-500'>$</span>
+            <span className='text-red-500'>₹</span>
             <span>{productDisplay.price}</span>
           </p>
           <div className='flex gap-3'>
