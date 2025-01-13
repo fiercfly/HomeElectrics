@@ -6,6 +6,13 @@ const initialState = {
   cartItem: []
 };
 
+// Helper function to safely parse price
+const parsePrice = (priceString) => {
+  if (typeof priceString === "number") return priceString; // Already a number
+  if (!priceString || typeof priceString !== "string") return 0; // Invalid value
+  return parseFloat(priceString.replace(/,/g, '')) || 0; // Remove commas and parse as float
+};
+
 export const productSlice = createSlice({
   name: "product",
   initialState,
@@ -20,50 +27,47 @@ export const productSlice = createSlice({
         toast("Item already in cart");
       } else {
         toast("Item added successfully");
-        const total = parseFloat(action.payload.price); // Ensure price is a number
-        state.cartItem = [
-          ...state.cartItem,
-          { ...action.payload, qty: 1, total: total }
-        ];
+        const price = parsePrice(action.payload.price); // Safely parse price
+        const total = price; // Total = price initially
+        state.cartItem = [...state.cartItem, { ...action.payload, qty: 1, total }];
       }
     },
 
     deleteCartItem: (state, action) => {
       toast("Item deleted successfully");
       const index = state.cartItem.findIndex((el) => el._id === action.payload);
-      if (index !== -1) {
-        state.cartItem.splice(index, 1);
-      }
+      state.cartItem.splice(index, 1);
     },
 
     increaseQty: (state, action) => {
       const index = state.cartItem.findIndex((el) => el._id === action.payload);
-      if (index !== -1) {
-        const item = state.cartItem[index];
-        item.qty += 1; // Increment quantity
-        item.total = parseFloat(item.price) * item.qty; // Update total
+      if (index >= 0) {
+        let qty = state.cartItem[index].qty;
+        const price = parsePrice(state.cartItem[index].price); // Safely parse price
+        const qtyInc = ++qty;
+        state.cartItem[index].qty = qtyInc;
+
+        const total = price * qtyInc; // Recalculate total
+        state.cartItem[index].total = total;
       }
     },
 
     decreaseQty: (state, action) => {
       const index = state.cartItem.findIndex((el) => el._id === action.payload);
-      if (index !== -1) {
-        const item = state.cartItem[index];
-        if (item.qty > 1) {
-          item.qty -= 1; // Decrement quantity
-          item.total = parseFloat(item.price) * item.qty; // Update total
+      if (index >= 0) {
+        let qty = state.cartItem[index].qty;
+        if (qty > 1) {
+          const price = parsePrice(state.cartItem[index].price); // Safely parse price
+          const qtyDec = --qty;
+          state.cartItem[index].qty = qtyDec;
+
+          const total = price * qtyDec; // Recalculate total
+          state.cartItem[index].total = total;
         }
       }
     }
   }
 });
 
-export const {
-  setDataProduct,
-  addCartItem,
-  deleteCartItem,
-  increaseQty,
-  decreaseQty
-} = productSlice.actions;
-
+export const { setDataProduct, addCartItem, deleteCartItem, increaseQty, decreaseQty } = productSlice.actions;
 export default productSlice.reducer;
