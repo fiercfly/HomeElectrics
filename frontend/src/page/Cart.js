@@ -11,11 +11,12 @@ const Cart = () => {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  // Function to parse price safely
+  // Function to parse price safely, accounting for commas
   const parsePrice = (priceString) => {
     if (typeof priceString === "number") return priceString; // If already a number
     if (typeof priceString !== "string") return 0; // If not a string, default to 0
-    return parseFloat(priceString.replace(/,/g, '')) || 0; // Remove commas and convert to float
+    // Remove commas and convert to float
+    return parseFloat(priceString.replace(/,/g, '')) || 0; 
   };
 
   // Calculate total price and quantity
