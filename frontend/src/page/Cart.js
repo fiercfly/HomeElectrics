@@ -94,7 +94,7 @@ const Cart = () => {
             <div className='flex w-full py-2 text-lg border-b'>
               <p>Total Price:</p>
               <p className='ml-auto w-32 font-bold'>
-                <span className='text-red-500'>$</span>{totalPrice.toFixed(2)}
+                <span className='text-red-500'>₹</span>{totalPrice.toFixed(2)}
               </p>
             </div>
             <button
