@@ -21,11 +21,6 @@ const Cart = () => {
   const totalPrice = productCartItem.reduce((acc, curr) => acc + parsePrice(curr.total), 0);
   const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
 
-  
-  const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
-  const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
-
-
 
   const handlePayment = async () => {
     if (user.email) {
