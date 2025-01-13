@@ -33,7 +33,7 @@ function CardFeature({image, name, category, price,loading,id }){
                     </h3>
                     <p className='text-slate-500 font-medium text-center'>{category}</p> 
                     <p className= 'font-bold text-center'>
-                        <span className='text-red-500'>$</span>
+                        <span className='text-red-500'>₹</span>
                         <span>{price}</span>
                     </p>
                 </Link> 
