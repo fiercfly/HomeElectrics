@@ -12,8 +12,12 @@ const Cart = () => {
   //When click on cart, user must be logined
   const user = useSelector(state => state.user)
   const navigate= useNavigate()
-
-  const totalPrice = productCartItem.reduce((acc, curr) => acc + parseInt(curr.total), 0);
+  const parsePrice = (priceString) => {
+    return parseFloat(priceString.replace(/,/g, ''));
+  };
+  // Calculate total price and quantity
+  const totalPrice = productCartItem.reduce((acc, curr) => acc + parsePrice(curr.total), 0);
+  const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
   const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
 
 
