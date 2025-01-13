@@ -13,17 +13,15 @@ const Cart = () => {
 
   // Function to parse price safely
   const parsePrice = (priceString) => {
-    if (typeof priceString !== "string") {
-      console.warn("Invalid priceString:", priceString);
-      return 0; // Default to 0 if the input is not a string
-    }
-    return parseFloat(priceString.replace(/,/g, '')); // Remove commas and convert to float
+    if (typeof priceString === "number") return priceString; // If already a number
+    if (typeof priceString !== "string") return 0; // If not a string, default to 0
+    return parseFloat(priceString.replace(/,/g, '')) || 0; // Remove commas and convert to float
   };
 
-  // Calculate total price and quantity with validation
+  // Calculate total price and quantity
   const totalPrice = productCartItem.reduce((acc, curr) => {
-    const price = curr.total ? parsePrice(curr.total) : 0;
-    return acc + price;
+    const itemTotal = curr.total ? parsePrice(curr.total) : curr.qty * parsePrice(curr.price || 0);
+    return acc + itemTotal;
   }, 0);
 
   const totalQty = productCartItem.reduce((acc, curr) => {
@@ -38,9 +36,9 @@ const Cart = () => {
         const res = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/checkout-payment`, {
           method: "POST",
           headers: {
-            "content-type": "application/json"
+            "content-type": "application/json",
           },
-          body: JSON.stringify(productCartItem)
+          body: JSON.stringify(productCartItem),
         });
 
         if (res.statusCode === 500) {
