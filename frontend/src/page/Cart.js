@@ -20,14 +20,14 @@ const Cart = () => {
 
   // Calculate total price and quantity
   const totalPrice = productCartItem.reduce((acc, curr) => {
-    const itemPrice = parsePrice(curr.price || 0);
-    const itemTotal = curr.total ? parsePrice(curr.total) : curr.qty * itemPrice;
-    return acc + itemTotal;
+    const price = parsePrice(curr.price || 0); // Convert price to float
+    const total = curr.total ? parsePrice(curr.total) : curr.qty * price; // Convert total to float
+    return acc + total; // Accumulate total
   }, 0);
 
   const totalQty = productCartItem.reduce((acc, curr) => {
-    const qty = curr.qty ? parseInt(curr.qty, 10) : 0;
-    return acc + qty;
+    const qty = curr.qty ? parseInt(curr.qty, 10) : 0; // Parse quantity
+    return acc + qty; // Accumulate quantity
   }, 0);
 
   const handlePayment = async () => {
@@ -39,7 +39,13 @@ const Cart = () => {
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify(productCartItem),
+          body: JSON.stringify(
+            productCartItem.map((item) => ({
+              ...item,
+              price: parsePrice(item.price), // Convert price to float for backend
+              total: parsePrice(item.total), // Convert total to float for backend
+            }))
+          ),
         });
 
         if (res.statusCode === 500) {
@@ -78,8 +84,8 @@ const Cart = () => {
                   image={el.image}
                   category={el.category}
                   qty={el.qty}
-                  total={parsePrice(el.total)} // Parse total safely
-                  price={parsePrice(el.price)} // Parse price safely
+                  total={parsePrice(el.total)} // Convert total to float
+                  price={parsePrice(el.price)} // Convert price to float
                 />
               ))}
             </div>
