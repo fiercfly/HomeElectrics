@@ -11,22 +11,22 @@ const Cart = () => {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  // Function to parse price safely, accounting for commas
+  // Function to safely parse price strings
   const parsePrice = (priceString) => {
     if (typeof priceString === "number") return priceString; // If already a number
     if (typeof priceString !== "string") return 0; // If not a string, default to 0
-    // Remove commas and convert to float
-    return parseFloat(priceString.replace(/,/g, '')) || 0; 
+    return parseFloat(priceString.replace(/,/g, '')) || 0; // Remove commas and convert to float
   };
 
   // Calculate total price and quantity
   const totalPrice = productCartItem.reduce((acc, curr) => {
-    const itemTotal = curr.total ? parsePrice(curr.total) : curr.qty * parsePrice(curr.price || 0);
+    const itemPrice = parsePrice(curr.price || 0);
+    const itemTotal = curr.total ? parsePrice(curr.total) : curr.qty * itemPrice;
     return acc + itemTotal;
   }, 0);
 
   const totalQty = productCartItem.reduce((acc, curr) => {
-    const qty = curr.qty ? parseInt(curr.qty) : 0;
+    const qty = curr.qty ? parseInt(curr.qty, 10) : 0;
     return acc + qty;
   }, 0);
 
@@ -78,8 +78,8 @@ const Cart = () => {
                   image={el.image}
                   category={el.category}
                   qty={el.qty}
-                  total={el.total}
-                  price={el.price}
+                  total={parsePrice(el.total)} // Parse total safely
+                  price={parsePrice(el.price)} // Parse price safely
                 />
               ))}
             </div>
