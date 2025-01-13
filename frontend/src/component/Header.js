@@ -10,6 +10,7 @@ import { BsCartFill } from 'react-icons/bs';
 const Header= () => {
   const [showMenu, setShowMenu]= useState(false)
   const userData= useSelector((state)=>state.user)
+  const productData = useSelector((state) => state.product.productList);
   const dispatch= useDispatch()
 
   const handleShowMenu= ()=>{
@@ -36,7 +37,7 @@ const Header= () => {
         <div className= "flex items-center gap-4 md:gap-7">
           <nav className= "gap-4 md:gap-6 text-base md:text-lg hidden md:flex">
             <Link to={"/"}>Home</Link>
-            <Link to={"menu/67842b3d8e480725a13fb108"}>Menu</Link>
+            <Link to={`/menu/${productData[0]?._id || 'defaultId'}`}>Menu</Link>
             <Link to={"about"}>About</Link>
             <Link to={"contact"}>Contact</Link>
           </nav>
