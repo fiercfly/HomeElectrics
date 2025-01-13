@@ -1,110 +1,122 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import CartProduct from "../component/CartProduct";
-import empty from "../asset/empty.gif"
+import empty from "../asset/empty.gif";
 import toast from 'react-hot-toast';
-import { loadStripe } from "@stripe/stripe-js"
+import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from 'react-router';
+
 const Cart = () => {
-  const productCartItem = useSelector((state) => state.product.cartItem)
-  // console.log(productCartItem)
+  const productCartItem = useSelector((state) => state.product.cartItem);
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  //When click on cart, user must be logined
-  const user = useSelector(state => state.user)
-  const navigate= useNavigate()
-
+  // Function to parse price safely
   const parsePrice = (priceString) => {
+    if (typeof priceString !== "string") {
+      console.warn("Invalid priceString:", priceString);
+      return 0; // Default to 0 if the input is not a string
+    }
     return parseFloat(priceString.replace(/,/g, '')); // Remove commas and convert to float
   };
 
-  // Calculate total price and quantity
-  const totalPrice = productCartItem.reduce((acc, curr) => acc + parsePrice(curr.total), 0);
-  const totalQty = productCartItem.reduce((acc, curr) => acc + parseInt(curr.qty), 0);
+  // Calculate total price and quantity with validation
+  const totalPrice = productCartItem.reduce((acc, curr) => {
+    const price = curr.total ? parsePrice(curr.total) : 0;
+    return acc + price;
+  }, 0);
 
+  const totalQty = productCartItem.reduce((acc, curr) => {
+    const qty = curr.qty ? parseInt(curr.qty) : 0;
+    return acc + qty;
+  }, 0);
 
   const handlePayment = async () => {
     if (user.email) {
-      const stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
-      const res = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/checkout-payment`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(productCartItem)
-      })
-      if (res.statusCode === 500) return;
+      try {
+        const stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+        const res = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/checkout-payment`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(productCartItem)
+        });
 
-      const data = await res.json()
-      // console.log(data)
-      toast("Redirecting to payment gateway")
-      stripePromise.redirectToCheckout({ sessionId: data })
-    }
-    else{
-      toast("You have not Login.. Please Login")
+        if (res.statusCode === 500) {
+          console.error("Server error during payment initialization");
+          return;
+        }
+
+        const data = await res.json();
+        toast("Redirecting to payment gateway");
+        stripePromise.redirectToCheckout({ sessionId: data });
+      } catch (error) {
+        console.error("Error during payment:", error);
+        toast.error("Payment failed. Please try again.");
+      }
+    } else {
+      toast("You have not logged in. Please login.");
       setTimeout(() => {
-        navigate("/login")
+        navigate("/login");
       }, 1000);
     }
-
-  }
+  };
 
   return (
     <>
-
       <div className='p-2 md:p-4'>
         <h2 className='text-lg md:text-2xl font-bold text-slate-600'>Your Cart Items</h2>
-        {productCartItem[0] ?
+        {productCartItem[0] ? (
           <div className='my-4 flex gap-3'>
-            {/*Display cart items*/}
+            {/* Display cart items */}
             <div className='w-full max-w-3xl'>
-              {
-                productCartItem.map(el => {
-                  return (
-                    <CartProduct
-                      key={el._id}
-                      id={el._id}
-                      name={el.name}
-                      image={el.image}
-                      category={el.category}
-                      qty={el.qty}
-                      total={el.total}
-                      price={el.price}
-                    />
-                  )
-                })
-              }
-
+              {productCartItem.map((el) => (
+                <CartProduct
+                  key={el._id}
+                  id={el._id}
+                  name={el.name}
+                  image={el.image}
+                  category={el.category}
+                  qty={el.qty}
+                  total={el.total}
+                  price={el.price}
+                />
+              ))}
             </div>
 
-            {/* total cart item */}
+            {/* Summary Section */}
             <div className='w-full max-w-md ml-auto'>
               <h2 className='bg-blue-500 text-white p-2 text-lg'>Summary</h2>
               <div className='flex w-full py-2 text-lg border-b'>
-                <p>Total Qty : </p>
+                <p>Total Qty:</p>
                 <p className='ml-auto w-32 font-bold'>{totalQty}</p>
               </div>
               <div className='flex w-full py-2 text-lg border-b'>
-                <p>Total Price</p>
-                <p className='ml-auto w-32 font-bold'><span className='text-red-500'>$</span>{totalPrice}</p>
+                <p>Total Price:</p>
+                <p className='ml-auto w-32 font-bold'>
+                  <span className='text-red-500'>$</span>{totalPrice.toFixed(2)}
+                </p>
               </div>
-              <button className='bg-red-500 w-full text-lg font-bold py-2 text-white' onClick={handlePayment}>
+              <button
+                className='bg-red-500 w-full text-lg font-bold py-2 text-white'
+                onClick={handlePayment}
+              >
                 Payment
               </button>
             </div>
-
           </div>
-          :
+        ) : (
           <>
             <div className='flex w-full justify-center items-center flex-col'>
               <img src={empty} alt="emptyCart" className='w-full max-w-sm' />
               <p className='text-slate-500 text-3xl font-bold'>Empty Cart</p>
-
             </div>
           </>
-        }
+        )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;
